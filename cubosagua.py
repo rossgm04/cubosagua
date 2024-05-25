@@ -1,6 +1,5 @@
 import sys
 
-
 class juegoCubos:
     pasos = 0
     aguaEnCubos = {'8': 0, '5': 0, '3': 0}
@@ -9,7 +8,6 @@ class juegoCubos:
         self.objetivo = fobjetivo
 
     def genStrCubos(self):
-
         caracterAgua = '~'
         visualizadorCubos = []
 
@@ -31,7 +29,6 @@ class juegoCubos:
             else:
                 visualizadorCubos.append(caracterAgua * 6)
 
-        # Devuelve una cadena con los cubos y su contenido de agua
         return '''
         8|{7}|
         7|{6}|
@@ -51,18 +48,17 @@ class juegoCubos:
         print(self.genStrCubos())
 
     def checkObjetivo(self):
-        # Comprueba si uno de los cubos ha conseguido el objetivo
         for cantidadAgua in self.aguaEnCubos.values():
             if cantidadAgua == self.objetivo:
                 print('Bien hecho! Lo has resuelto en', self.pasos, 'pasos!')
                 sys.exit()
 
     def selecOpcion(self):
-        # Selección de una opción
         print('Elige una opción:')
         print('  (L)lenar un cubo')
         print('  (V)aciar un cubo')
         print('  (M)over el agua de un cubo a otro')
+        print('  (Q)vaciar todos los cubos')
         print('  (S)alir')
 
         while True:
@@ -71,7 +67,7 @@ class juegoCubos:
                 print('Gracias por jugar!')
                 sys.exit()
 
-            if move in ('L', 'V', 'M'):
+            if move in ('L', 'V', 'M', 'Q'):
                 return move
 
     def selecCubo(self, mensaje):
@@ -91,16 +87,19 @@ class juegoCubos:
         self.aguaEnCubos[cuboOrigen] = 0
         self.pasos += 1
 
+    def vaciarTodosCubos(self):
+        self.aguaEnCubos['8'] = 0
+        self.aguaEnCubos['5'] = 0
+        self.aguaEnCubos['3'] = 0
+        self.pasos += 1
+
     def moverCubo(self, cuboOrigen, cuboDestino):
         cuboDestinoTam = int(cuboDestino)
         espacioVacioCuboDestino = cuboDestinoTam - self.aguaEnCubos[cuboDestino]
         aguaEnCuboOrigen = self.aguaEnCubos[cuboOrigen]
         cantidadAMover = min(espacioVacioCuboDestino, aguaEnCuboOrigen)
 
-        # Saco el agua de este cubo
         self.aguaEnCubos[cuboOrigen] -= cantidadAMover
-
-        # Introduzco el agua en este cubo
         self.aguaEnCubos[cuboDestino] += cantidadAMover
         self.pasos += 1
 
@@ -111,16 +110,17 @@ class juegoCubos:
             if opcion == 'L':
                 cubo = self.selecCubo('Selecciona el cubo 8, 5, 3 o SALIR:')
                 self.llenarCubo(cubo)
-            elif opcion == "V":
+            elif opcion == 'V':
                 cubo = self.selecCubo('Selecciona el cubo 8, 5, 3 o SALIR:')
                 self.vaciarCubo(cubo)
-            elif opcion == "M":
+            elif opcion == 'M':
                 cuboOrigen = self.selecCubo('Selecciona el cubo ORIGEN 8, 5, 3 o SALIR:')
                 cuboDestino = self.selecCubo('Selecciona el cubo DESTINO 8, 5, 3 o SALIR:')
                 self.moverCubo(cuboOrigen, cuboDestino)
+            elif opcion == 'Q':
+                self.vaciarTodosCubos()
             self.mostrarEstadoCubos()
             self.checkObjetivo()
-
 
 if __name__ == "__main__":
     juego = juegoCubos(4)
